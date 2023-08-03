@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/person_identification" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/resources/anti_spoof_models" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/resources/detection_model" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/src/data_io" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/liveness_detection/src/model_lib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/person_identification/photos" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
