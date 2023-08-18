@@ -14,7 +14,7 @@ def recognize(video_path: str, known_image):
     false_counter = 0
     true_counter = 0
     threshold = 0.1
-
+    known_image = cv2.imread(known_image)
     if total_frames > 150:
         return "video_too_long"
     while not cap.isOpened():
@@ -27,13 +27,14 @@ def recognize(video_path: str, known_image):
         if ret:
             if counter % 15 == 0:
                 label, value, image_bbox = test.test(frame.copy(), join(dirname(__file__), "liveness_detection", "resources", "anti_spoof_models"), device_id=0)
-                print("label:", label, "value:", value)
                 if label == 1:
                     if isMatched(frame, known_image):
+                        print("REAL Face", "accuracy:", value)
                         true_counter += 1
                     else:
                         false_counter += 1
                 else:
+                    print("FAKE Face", "accuracy:", value)
                     false_counter += 1
             counter += 1
         cv2.waitKey(20)
@@ -48,5 +49,5 @@ def recognize(video_path: str, known_image):
 def isMatched(unknown_image_path, known_image_path):
     result = DeepFace.verify(unknown_image_path, known_image_path, model_name="Facenet512",
                              distance_metric="euclidean_l2")
-    print(result)
+    print("Verified:",result.get('verified'),"Distance:",result.get("distance"),"Threshold:",result.get("threshold"))
     return result.get('verified')

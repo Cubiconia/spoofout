@@ -1,12 +1,13 @@
 import os
 from tempfile import NamedTemporaryFile
+from typing_extensions import Annotated
 
-import cv2
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.requests import Request
+from fastapi.responses import JSONResponse
 
 from person_identification import face_recognition_main as face
+from util.authentication import basic_auth_handler, jwt_token_handler
 
 app = FastAPI()
 
@@ -22,33 +23,50 @@ app.add_middleware(
 
 
 @app.post("/verify-video")
-async def verify_video(req: Request, file: UploadFile = File(...)):
-    temp = NamedTemporaryFile(delete=False, dir=os.getcwd())
-    img = cv2.imread(os.path.join("person_identification", "photos", "sample_1.jpeg"))
-    print("path_image", os.path.join("person_identification", "photos", "sample_1.jpeg"))
+async def verify_video(_: Annotated[str, Depends(basic_auth_handler)],
+                       # jwt:Annotated[str, Depends(jwt_token_handler)],
+                       video: UploadFile = File(),
+                       image: UploadFile = File()):
+
+    temp_video = NamedTemporaryFile(delete=False, dir=os.getcwd())
+    temp_image = NamedTemporaryFile(delete=False, dir=os.getcwd())
     try:
         try:
-            contents = await file.read()
-            with temp as f:
+            contents = await video.read()
+            contents2 = await image.read()
+
+            with temp_video as f:
                 f.write(contents)
+            with temp_image as f:
+                f.write(contents2)
+
         except Exception:
-            raise HTTPException(status_code=500, detail='Error on uploading the file')
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Error on uploading the file')
         finally:
-            temp.close()
-            file.file.close()
-        path = temp.name.replace("\\","/")
-        splitted = path.rsplit("/",maxsplit=1)
-        result = face.recognize(splitted[1], img)
-        # result = "face_match"
+            temp_video.close()
+            video.file.close()
+
+            temp_image.close()
+            image.file.close()
+
+        path_video = temp_video.name.replace("\\", "/")
+        path_video_split = path_video.rsplit("/", maxsplit=1)
+
+        path_image = temp_image.name.replace("\\", "/")
+        path_image_split = path_image.rsplit("/", maxsplit=1)
+
+        result = face.recognize(path_video_split[1], path_image_split[1])
         print(result)
     except Exception:
-        raise HTTPException(status_code=500, detail='Something went wrong')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Something went wrong')
     finally:
-        temp.close()  # the `with` statement above takes care of closing the file
-        os.remove(temp.name)  # Delete temp file
-    return {"status": result}
+        temp_video.close()  # the `with` statement above takes care of closing the file
+        temp_image.close()
+        os.remove(temp_video.name)  # Delete temp file
+        os.remove(temp_image.name)
 
-# if __name__ == '__main__':
+    return JSONResponse(content={"message": result})
+    # return {"status": result}
 
 # sequence()
 # face_identification()
