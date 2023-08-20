@@ -1,4 +1,4 @@
-FROM amd64/python:3.7
+FROM amd64/python:3.8
 
 # RUN mkdir -p /var/www/dockerize-python/anti-spoofing-app
 # WORKDIR /var/www/dockerize-python/anti-spoofing-app
