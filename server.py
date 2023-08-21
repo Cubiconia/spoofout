@@ -8,8 +8,8 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "main:app",
-        host="localhost",
-        port=int(os.environ["PORT"]) or 8888,
+        host=os.environ["HOST"] or "127.0.0.1",
+        port=int(os.environ["PORT"]) or 7901,
         reload=False,
         log_level="debug"
     )
