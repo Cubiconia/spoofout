@@ -10,7 +10,7 @@ def recognize(video_path: str, known_image):
     # total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     fps = cap.get(cv2.CAP_PROP_FPS)
 
-    # print(total_frames, fps, cap.get(cv2.CAP_PROP_POS_MSEC))
+    print(fps, cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_count = 0
     false_counter = 0
     true_counter = 0
@@ -30,7 +30,7 @@ def recognize(video_path: str, known_image):
         ret, frame = cap.read()
         cv2.flip(frame, 1)
         if ret:
-            if frame_count % (fps/2) == 0:
+            if frame_count % int(fps/2) == 0:
                 label, value, image_bbox = test.test(frame.copy(), join(dirname(__file__), "liveness_detection", "resources", "anti_spoof_models"), device_id=0)
                 if label == 1:
                     if isMatched(frame, known_image):
