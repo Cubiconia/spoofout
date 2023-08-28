@@ -25,8 +25,8 @@ app.add_middleware(
 @app.post("/verify-video")
 async def verify_video(_: Annotated[str, Depends(basic_auth_handler)],
                        # jwt:Annotated[str, Depends(jwt_token_handler)],
-                       video: UploadFile = File(),
-                       image: UploadFile = File()):
+                       video: UploadFile = File(...),
+                       image: UploadFile = File(...)):
 
     temp_video = NamedTemporaryFile(delete=False, dir=os.getcwd())
     temp_image = NamedTemporaryFile(delete=False, dir=os.getcwd())

@@ -11,5 +11,5 @@ if __name__ == "__main__":
         host=os.environ["HOST"] or "127.0.0.1",
         port=int(os.environ["PORT"]) or 7901,
         reload=False,
-        log_level="debug"
+        log_level="info"
     )
